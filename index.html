@@ -1,0 +1,982 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MindVault</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #11131c;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           TOP BANNER
+        ========================= */
+
+        .banner {
+            width: 100%;
+            background: linear-gradient(135deg, #7c4dff, #4f46e5);
+            padding: 28px 20px;
+            text-align: center;
+            border-bottom: 4px solid #2c215e;
+        }
+
+        .banner h1 {
+            font-size: 42px;
+            margin-bottom: 8px;
+        }
+
+        .banner p {
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
+        /* =========================
+           MENU
+        ========================= */
+
+        .menu {
+            width: 100%;
+            background: #191c28;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border-bottom: 1px solid #303443;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .menu button {
+            background: transparent;
+            color: #dfe2ff;
+            border: 1px solid #3a3e52;
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .menu button:hover {
+            background: #292d40;
+        }
+
+        .menu button.active {
+            background: #7c4dff;
+            border-color: #7c4dff;
+            color: white;
+        }
+
+        /* =========================
+           MAIN FRAME
+        ========================= */
+
+        .page-frame {
+            width: min(1100px, 94%);
+            margin: 35px auto;
+            border: 2px solid #35394d;
+            border-radius: 22px;
+            background: #171923;
+            padding: 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.35);
+        }
+
+        /* =========================
+           SECTIONS
+        ========================= */
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+        }
+
+        .section-title h2 {
+            font-size: 28px;
+            margin-bottom: 7px;
+        }
+
+        .section-title p {
+            color: #9da3ba;
+        }
+
+        /* =========================
+           POST BOX
+        ========================= */
+
+        .post-box {
+            border: 2px solid #34384c;
+            border-radius: 18px;
+            padding: 22px;
+            background: #1d202d;
+            margin-bottom: 25px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            resize: vertical;
+            border: 1px solid #3b4055;
+            border-radius: 14px;
+            padding: 16px;
+            background: #10121a;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #7c4dff;
+        }
+
+        .mood-title {
+            margin: 18px 0 10px;
+            color: #dfe2f2;
+            font-weight: bold;
+        }
+
+        .moods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .mood {
+            background: #272b3b;
+            color: white;
+            border: 1px solid #3b4055;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .mood:hover {
+            background: #34394d;
+        }
+
+        .mood.selected {
+            background: #7c4dff;
+            border-color: #7c4dff;
+        }
+
+        .post-button {
+            width: 100%;
+            margin-top: 18px;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #7c4dff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .post-button:hover {
+            background: #6c3ff0;
+        }
+
+        /* =========================
+           SAFETY BOX
+        ========================= */
+
+        .safety-box {
+            border: 1px solid #6a4d8f;
+            background: #211b2d;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #ddd4eb;
+            display: none;
+        }
+
+        .safety-box strong {
+            color: #f0d5ff;
+        }
+
+        /* =========================
+           COMMUNITY POSTS
+        ========================= */
+
+        .post {
+            border: 2px solid #34384c;
+            background: #1d202d;
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .username {
+            font-weight: bold;
+            color: #c9b8ff;
+        }
+
+        .mood-label {
+            background: #292d40;
+            border-radius: 20px;
+            padding: 5px 10px;
+            color: #c5c9db;
+            font-size: 12px;
+        }
+
+        .post-text {
+            color: #eceefa;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            background: #272b3b;
+            color: white;
+            border: 1px solid #3b4055;
+            padding: 8px 13px;
+            border-radius: 9px;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            background: #34394d;
+        }
+
+        .reply-box {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #34384c;
+            display: none;
+        }
+
+        .reply-box textarea {
+            min-height: 90px;
+        }
+
+        .reply-button {
+            margin-top: 8px;
+            background: #4f46e5;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 9px;
+            cursor: pointer;
+        }
+
+        .replies {
+            margin-top: 15px;
+        }
+
+        .reply {
+            background: #151823;
+            border-left: 3px solid #7c4dff;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 8px;
+            color: #d9dcec;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #888fa8;
+        }
+
+        /* =========================
+           OTHER PAGES
+        ========================= */
+
+        .info-frame {
+            border: 2px solid #34384c;
+            background: #1d202d;
+            border-radius: 18px;
+            padding: 24px;
+            line-height: 1.7;
+            color: #cdd1df;
+        }
+
+        .info-frame h3 {
+            color: white;
+            margin-bottom: 10px;
+            margin-top: 15px;
+        }
+
+        .info-frame h3:first-child {
+            margin-top: 0;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #757b92;
+            font-size: 13px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 650px) {
+            .banner h1 {
+                font-size: 32px;
+            }
+
+            .menu {
+                flex-wrap: wrap;
+            }
+
+            .page-frame {
+                padding: 15px;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         BANNER
+    ========================= -->
+
+    <header class="banner">
+        <h1>🧠 MindVault</h1>
+        <p>A quiet place to let your thoughts out.</p>
+    </header>
+
+    <!-- =========================
+         MENU
+    ========================= -->
+
+    <nav class="menu">
+        <button class="menu-button active" onclick="showPage('home', this)">
+            🏠 Home
+        </button>
+
+        <button class="menu-button" onclick="showPage('community', this)">
+            💬 Community
+        </button>
+
+        <button class="menu-button" onclick="showPage('about', this)">
+            ℹ️ About
+        </button>
+
+        <button class="menu-button" onclick="showPage('help', this)">
+            ❤️ Help
+        </button>
+    </nav>
+
+    <!-- =========================
+         MAIN FRAME
+    ========================= -->
+
+    <main class="page-frame">
+
+        <!-- HOME -->
+
+        <section id="home" class="section active">
+
+            <div class="section-title">
+                <h2>Write what you're feeling</h2>
+                <p>You can share your thoughts anonymously.</p>
+            </div>
+
+            <div class="post-box">
+
+                <textarea
+                    id="postText"
+                    placeholder="Type your heart out..."
+                ></textarea>
+
+                <div class="mood-title">
+                    How are you feeling?
+                </div>
+
+                <div class="moods">
+
+                    <button class="mood" onclick="chooseMood(this, 'Happy')">
+                        😊 Happy
+                    </button>
+
+                    <button class="mood" onclick="chooseMood(this, 'Sad')">
+                        😢 Sad
+                    </button>
+
+                    <button class="mood" onclick="chooseMood(this, 'Angry')">
+                        😡 Angry
+                    </button>
+
+                    <button class="mood" onclick="chooseMood(this, 'Anxious')">
+                        😰 Anxious
+                    </button>
+
+                    <button class="mood" onclick="chooseMood(this, 'Lonely')">
+                        🥀 Lonely
+                    </button>
+
+                    <button class="mood" onclick="chooseMood(this, 'Confused')">
+                        😵 Confused
+                    </button>
+
+                    <button class="mood" onclick="chooseMood(this, 'Other')">
+                        💭 Other
+                    </button>
+
+                </div>
+
+                <div id="safetyBox" class="safety-box">
+                    <strong>💜 You matter.</strong><br>
+                    Your message sounds like you may be going through something very serious.
+                    MindVault is not an emergency service or a replacement for professional help.
+                    Consider contacting someone you trust or a local emergency/crisis service if
+                    you are in immediate danger.
+                </div>
+
+                <button class="post-button" onclick="createPost()">
+                    ✨ Post Anonymously
+                </button>
+
+            </div>
+
+            <div class="section-title">
+                <h2>Recent thoughts</h2>
+                <p>See what other anonymous users are sharing.</p>
+            </div>
+
+            <div id="homePosts"></div>
+
+        </section>
+
+
+        <!-- COMMUNITY -->
+
+        <section id="community" class="section">
+
+            <div class="section-title">
+                <h2>💬 Community</h2>
+                <p>Anonymous thoughts shared by everyone.</p>
+            </div>
+
+            <div id="communityPosts"></div>
+
+        </section>
+
+
+        <!-- ABOUT -->
+
+        <section id="about" class="section">
+
+            <div class="section-title">
+                <h2>ℹ️ About MindVault</h2>
+                <p>A place designed for honest thoughts.</p>
+            </div>
+
+            <div class="info-frame">
+
+                <h3>What is MindVault?</h3>
+
+                <p>
+                    MindVault is an anonymous emotional-support community concept.
+                    It gives people a place to write down what they are feeling
+                    without having to use their real name.
+                </p>
+
+                <h3>Why anonymous?</h3>
+
+                <p>
+                    Sometimes people find it easier to talk about difficult feelings
+                    when they don't have to reveal their identity.
+                </p>
+
+                <h3>Important</h3>
+
+                <p>
+                    MindVault is a community project and should not be treated as
+                    professional medical or psychological advice.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- HELP -->
+
+        <section id="help" class="section">
+
+            <div class="section-title">
+                <h2>❤️ Need help?</h2>
+                <p>It's okay to ask for support.</p>
+            </div>
+
+            <div class="info-frame">
+
+                <h3>Talk to someone</h3>
+
+                <p>
+                    Consider speaking with a trusted friend, family member,
+                    teacher, counselor, or mental-health professional.
+                </p>
+
+                <h3>In an emergency</h3>
+
+                <p>
+                    If you believe you are in immediate danger, contact your
+                    local emergency service or go to the nearest emergency department.
+                </p>
+
+                <h3>Be kind</h3>
+
+                <p>
+                    When replying to another person's post, try to be supportive,
+                    respectful, and non-judgmental.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        MindVault • Anonymous thoughts, supportive conversations
+    </footer>
+
+
+    <script>
+
+        let selectedMood = "";
+
+        /* =========================
+           MENU
+        ========================= */
+
+        function showPage(pageId, button) {
+
+            const sections = document.querySelectorAll(".section");
+
+            sections.forEach(section => {
+                section.classList.remove("active");
+            });
+
+            document.getElementById(pageId).classList.add("active");
+
+            const buttons = document.querySelectorAll(".menu-button");
+
+            buttons.forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+            button.classList.add("active");
+
+            if (pageId === "community") {
+                showPosts("communityPosts");
+            }
+
+            if (pageId === "home") {
+                showPosts("homePosts");
+            }
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+
+        /* =========================
+           MOOD
+        ========================= */
+
+        function chooseMood(button, mood) {
+
+            selectedMood = mood;
+
+            const moods = document.querySelectorAll(".mood");
+
+            moods.forEach(item => {
+                item.classList.remove("selected");
+            });
+
+            button.classList.add("selected");
+        }
+
+
+        /* =========================
+           USERNAME
+        ========================= */
+
+        function randomUsername() {
+
+            const names = [
+                "QuietSoul",
+                "MoonWriter",
+                "HiddenHeart",
+                "AnonymousMind",
+                "LostThought",
+                "NightThinker",
+                "SilentVoice",
+                "CloudedMind",
+                "UnknownSoul",
+                "DeepThinker"
+            ];
+
+            const number = Math.floor(Math.random() * 9999);
+
+            return names[Math.floor(Math.random() * names.length)] + number;
+        }
+
+
+        /* =========================
+           SAFETY DETECTION
+        ========================= */
+
+        function dangerousMessage(text) {
+
+            const words = [
+                "kill myself",
+                "killing myself",
+                "suicide",
+                "want to die",
+                "wanna die",
+                "end my life",
+                "end it all",
+                "hurt myself",
+                "self harm",
+                "self-harm"
+            ];
+
+            const lowerText = text.toLowerCase();
+
+            return words.some(word => lowerText.includes(word));
+        }
+
+
+        /* =========================
+           CREATE POST
+        ========================= */
+
+        function createPost() {
+
+            const textBox = document.getElementById("postText");
+            const text = textBox.value.trim();
+
+            if (text === "") {
+                alert("Please write something first.");
+                return;
+            }
+
+            const mood = selectedMood || "Other";
+
+            const post = {
+                username: randomUsername(),
+                text: text,
+                mood: mood,
+                likes: 0,
+                replies: [],
+                date: new Date().toLocaleString()
+            };
+
+            let posts = JSON.parse(localStorage.getItem("mindvault") || "[]");
+
+            posts.unshift(post);
+
+            localStorage.setItem("mindvault", JSON.stringify(posts));
+
+            textBox.value = "";
+
+            selectedMood = "";
+
+            document.querySelectorAll(".mood").forEach(item => {
+                item.classList.remove("selected");
+            });
+
+            document.getElementById("safetyBox").style.display = "none";
+
+            showPosts("homePosts");
+
+            alert("Your post was shared anonymously 💜");
+        }
+
+
+        /* =========================
+           SHOW SAFETY WARNING
+        ========================= */
+
+        document.getElementById("postText").addEventListener("input", function () {
+
+            const box = document.getElementById("safetyBox");
+
+            if (dangerousMessage(this.value)) {
+                box.style.display = "block";
+            } else {
+                box.style.display = "none";
+            }
+
+        });
+
+
+        /* =========================
+           SHOW POSTS
+        ========================= */
+
+        function showPosts(elementId) {
+
+            const container = document.getElementById(elementId);
+
+            let posts = JSON.parse(localStorage.getItem("mindvault") || "[]");
+
+            if (posts.length === 0) {
+                container.innerHTML = `
+                    <div class="post empty">
+                        No posts yet.<br>
+                        Be the first person to share something.
+                    </div>
+                `;
+
+                return;
+            }
+
+            container.innerHTML = "";
+
+            posts.forEach((post, index) => {
+
+                const postDiv = document.createElement("div");
+
+                postDiv.className = "post";
+
+                postDiv.innerHTML = `
+
+                    <div class="post-header">
+
+                        <span class="username">
+                            👤 ${escapeHTML(post.username)}
+                        </span>
+
+                        <span class="mood-label">
+                            ${escapeHTML(post.mood)}
+                        </span>
+
+                    </div>
+
+                    <div class="post-text">
+                        ${escapeHTML(post.text)}
+                    </div>
+
+                    <div class="post-actions">
+
+                        <button
+                            class="action-button"
+                            onclick="likePost(${index})"
+                        >
+                            ❤️ ${post.likes}
+                        </button>
+
+                        <button
+                            class="action-button"
+                            onclick="toggleReply(${index})"
+                        >
+                            💬 Reply
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="replyBox${index}"
+                        class="reply-box"
+                    >
+
+                        <textarea
+                            id="replyText${index}"
+                            placeholder="Write a supportive reply..."
+                        ></textarea>
+
+                        <button
+                            class="reply-button"
+                            onclick="sendReply(${index})"
+                        >
+                            Send Reply
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="replies${index}"
+                        class="replies"
+                    ></div>
+                `;
+
+                container.appendChild(postDiv);
+
+                showReplies(index);
+
+            });
+        }
+
+
+        /* =========================
+           LIKE
+        ========================= */
+
+        function likePost(index) {
+
+            let posts = JSON.parse(localStorage.getItem("mindvault") || "[]");
+
+            posts[index].likes++;
+
+            localStorage.setItem("mindvault", JSON.stringify(posts));
+
+            showPosts("homePosts");
+            showPosts("communityPosts");
+        }
+
+
+        /* =========================
+           REPLY BOX
+        ========================= */
+
+        function toggleReply(index) {
+
+            const box = document.getElementById("replyBox" + index);
+
+            if (box.style.display === "block") {
+                box.style.display = "none";
+            } else {
+                box.style.display = "block";
+            }
+        }
+
+
+        /* =========================
+           SEND REPLY
+        ========================= */
+
+        function sendReply(index) {
+
+            const replyText =
+                document.getElementById("replyText" + index);
+
+            const text = replyText.value.trim();
+
+            if (text === "") {
+                alert("Please write a reply first.");
+                return;
+            }
+
+            let posts = JSON.parse(localStorage.getItem("mindvault") || "[]");
+
+            if (!posts[index].replies) {
+                posts[index].replies = [];
+            }
+
+            posts[index].replies.push({
+                username: randomUsername(),
+                text: text
+            });
+
+            localStorage.setItem("mindvault", JSON.stringify(posts));
+
+            replyText.value = "";
+
+            showPosts("homePosts");
+            showPosts("communityPosts");
+        }
+
+
+        /* =========================
+           SHOW REPLIES
+        ========================= */
+
+        function showReplies(index) {
+
+            const container =
+                document.getElementById("replies" + index);
+
+            if (!container) return;
+
+            let posts =
+                JSON.parse(localStorage.getItem("mindvault") || "[]");
+
+            const replies = posts[index].replies || [];
+
+            container.innerHTML = "";
+
+            replies.forEach(reply => {
+
+                const div = document.createElement("div");
+
+                div.className = "reply";
+
+                div.innerHTML =
+                    "<strong>" +
+                    escapeHTML(reply.username) +
+                    "</strong><br>" +
+                    escapeHTML(reply.text);
+
+                container.appendChild(div);
+
+            });
+        }
+
+
+        /* =========================
+           SECURITY
+        ========================= */
+
+        function escapeHTML(text) {
+
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        /* =========================
+           LOAD POSTS
+        ========================= */
+
+        showPosts("homePosts");
+
+    </script>
+
+</body>
+</html>
+```
